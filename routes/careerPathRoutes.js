@@ -4,6 +4,7 @@ const {
   getUserCareerPaths,
   getCareerPathById,
   getDeleteRoadmapById,
+  enhanceResume,
 } = require("../controllers/careerPathController");
 // const { check } = require("express-validator");
 
@@ -15,5 +16,7 @@ router.get("/detail/:id", getCareerPathById);
 
 // delet the roadmap form path_id
 router.get("/delete/:id", getDeleteRoadmapById);
+
+router.post("/enhanceResume",enhanceResume)
 
 module.exports = router;

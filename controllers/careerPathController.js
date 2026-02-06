@@ -72,3 +72,66 @@ export const getDeleteRoadmapById = async (req,res)=>{
       console.log("error in geDeleteRoadmapById :",error);
     }
 }
+
+import { Groq } from "groq-sdk";
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY_ANYLESIS_RESUME,
+});
+
+export const enhanceResume = async (req, res) => {
+  try {
+    const { resumeData, jobDescription } = req.body;
+
+    if (!resumeData) {
+      return res.status(400).json({ error: "Resume data is required." });
+    }
+
+    const enhancementPrompt = `
+      Act as an expert career coach. Rewrite the following resume data to perfectly match the Job Description: "${jobDescription}".
+      
+      RULES:
+      1. Return ONLY a JSON object.
+      2. The structure must be EXACTLY like the input resumeData.
+      3. Use professional keywords and quantify achievements.
+      4. Calculate "atsscore" (before enhancement) and "atsScore" (after enhancement).
+
+      INPUT DATA:
+      ${JSON.stringify(resumeData)}
+
+      EXPECTED JSON RESPONSE FORMAT:
+      {
+        "atsscore": number,
+        "atsScore": number,
+        "reasons": ["string"],
+        "enhancedData": {
+          "personalInfo": { "fullName": "...", "jobTitle": "...", "summary": "..." },
+          "experience": [{ "title": "...", "company": "...", "desc": "..." }],
+          "education": [{ "school": "...", "degree": "..." }],
+          "skills": ["string"],
+          "projects": [{ "title": "...", "desc": "..." }],
+          "certifications": [{ "name": "..." }],
+          "strengths": ["string"]
+        }
+      }
+    `;
+
+    const response = await groq.chat.completions.create({
+      messages: [{ role: "system", content: "You are a helpful assistant that outputs only JSON." }, 
+                 { role: "user", content: enhancementPrompt }],
+      model: "llama-3.3-70b-versatile",
+      response_format: { type: "json_object" }
+    });
+
+    const aiResponse = JSON.parse(response.choices[0].message.content);
+
+    res.status(200).json({
+      message: "Resume successfully enhanced",
+      ...aiResponse // Includes atsscore, atsScore, reasons, and enhancedData
+    });
+
+  } catch (error) {
+    console.error("Groq Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
