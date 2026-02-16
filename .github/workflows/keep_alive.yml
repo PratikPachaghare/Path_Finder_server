@@ -20,7 +20,7 @@ jobs:
 
           # Logic: Agar Hour 5 se bada (>=5) aur Raat ke 1 se chota (<1) hai
           # Matlab Subah 5:00 AM se Raat 12:59 AM tak chalega
-          if [ $HOUR -ge 6 ] || [ $HOUR -lt 1 ]; then
+          if [ $HOUR -ge 2 ] || [ $HOUR -lt 1 ]; then
             echo "🚀 Server jagne ka waqt hai. Pinging..."
             # APNE RENDER KA URL YAHA DALO
             curl -I https://dicipline-mobail-app-server.onrender.com/ping
