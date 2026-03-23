@@ -2,7 +2,8 @@ const express = require('express');
 const { 
   submitAssessment, 
   getAssessmentResults,
-  getQuestions
+  getQuestions,
+  submitRoadmapFeedback,
 } = require('../controllers/assessmentController');
 const { protect } = require('../middleware/auth');
 const { check } = require('express-validator');
@@ -26,5 +27,8 @@ router.get('/results/:userId', getAssessmentResults);
 
 // Get assessment questionss
 router.get('/questions', getQuestions);
+
+// Submit roadmap feedback
+router.post('/roadmap-feedback', submitRoadmapFeedback);
 
 module.exports = router;

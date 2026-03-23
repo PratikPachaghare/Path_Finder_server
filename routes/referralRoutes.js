@@ -5,6 +5,7 @@ const {
   getReferralStats,
   redeemPoints,
   getReferralHistory,
+  submitReferralFeedback,
 } = require('../controllers/referralController');
 const { protect } = require('../middleware/auth');
 
@@ -16,5 +17,6 @@ router.post('/track', protect, trackReferral);
 router.get('/stats', protect, getReferralStats);
 router.post('/redeem', protect, redeemPoints);
 router.get('/history', protect, getReferralHistory);
+router.post('/feedback', protect, submitReferralFeedback);
 
 module.exports = router;

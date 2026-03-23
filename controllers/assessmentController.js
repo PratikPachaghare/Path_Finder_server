@@ -1,5 +1,6 @@
 const Assessment = require('../models/Assessment');
 const Question = require('../models/Question');
+const RoadmapFeedback = require('../models/RoadmapFeedback');
 const { validationResult } = require('express-validator');
 
 // @desc    Submit assessment responses
@@ -88,6 +89,48 @@ exports.getQuestions = async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Server Error'
+    });
+  }
+};
+
+// @desc    Submit roadmap feedback
+// @route   POST /api/assessment/roadmap-feedback
+// @access  Private
+exports.submitRoadmapFeedback = async (req, res) => {
+  try {
+    const { ratings, feedback, careerPath } = req.body;
+
+    if (!careerPath) {
+      return res.status(400).json({
+        success: false,
+        message: 'Career path is required',
+      });
+    }
+
+    const safeRatings = {
+      contentQuality: Number(ratings?.contentQuality || 0),
+      clarity: Number(ratings?.clarity || 0),
+      effectiveness: Number(ratings?.effectiveness || 0),
+      overall: Number(ratings?.overall || 0),
+    };
+
+    const roadmapFeedback = await RoadmapFeedback.create({
+      user: req.user.id,
+      careerPath,
+      ratings: safeRatings,
+      feedback: feedback || '',
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Roadmap feedback stored successfully',
+      data: roadmapFeedback,
+    });
+  } catch (err) {
+    console.error('submitRoadmapFeedback error:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'Server Error',
     });
   }
 };

@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Referral = require('../models/Referral');
+const ReferralFeedback = require('../models/ReferralFeedback');
 const crypto = require('crypto');
 
 // Generate unique referral code for user
@@ -201,5 +202,45 @@ exports.getReferralHistory = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Submit referral feature feedback
+exports.submitReferralFeedback = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { rating, message } = req.body;
+
+    if (!rating || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rating and message are required',
+      });
+    }
+
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rating must be between 1 and 5',
+      });
+    }
+
+    const feedback = await ReferralFeedback.create({
+      user: userId,
+      rating,
+      message,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Feedback submitted successfully',
+      data: feedback,
+    });
+  } catch (error) {
+    console.error('Error in submitReferralFeedback:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to submit feedback',
+    });
   }
 };
