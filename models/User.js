@@ -27,7 +27,6 @@ const UserSchema = new mongoose.Schema({
   phone: {
     type: Number,
     required: [true, 'Please add a Number'],
-    select: false
   },
   createdAt: {
     type: Date,
