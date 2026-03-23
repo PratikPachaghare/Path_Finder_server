@@ -24,6 +24,7 @@ const assessmentRoutes = require("./routes/assessmentRoutes.js");
 const careerPathRoutes = require("./routes/careerPathRoutes.js");
 const generateRoadmapRoutes = require("./routes/gerateRoadmap.js"); // Fixed typo
 const chatBotRoutes = require("./routes/chatBotRoutes.js"); // Fixed typo
+const referralRoutes = require("./routes/referralRoutes.js");
 
 // ✅ Correct Route Usage
 app.use("/api/auth", authRoutes);
@@ -31,6 +32,7 @@ app.use("/api/assessment", assessmentRoutes);
 app.use("/api/career-paths", careerPathRoutes); // Fixed naming for consistency
 app.use("/api/generate", generateRoadmapRoutes); // Fixed typo
 app.use("/api",chatBotRoutes);
+app.use("/api/referral", referralRoutes);
 
 // Root route
 app.get("/", (req, res) => {

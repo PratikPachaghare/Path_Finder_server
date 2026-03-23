@@ -28,6 +28,24 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Please add a Number'],
   },
+  referralCode: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  referralPoints: {
+    type: Number,
+    default: 0
+  },
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  totalReferrals: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: Date.now
